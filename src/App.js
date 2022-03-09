@@ -10,6 +10,7 @@ export default function App() {
 
 const [startQuiz, setStartQuiz] = useState(false)
 const [questionsData, setQuestionsData] = useState([])
+const [selectedAnswers, setSelectedAnswers] = useState([])
 
 const questionsArray = questionsData.map((prevData, index) => {
   return {
@@ -17,16 +18,8 @@ const questionsArray = questionsData.map((prevData, index) => {
     index: index,
     correct_answer : prevData.correct_answer,
     incorrect_answers : prevData.incorrect_answers,
-    id: nanoid()
-  }
-})
-
-const [buttonsArray, setButtonsArray] = questionsArray.map(item => {
-  return {
-    buttonsIndex : item.index,
-    correct: item.correct_answer,
-    incorrect: item.incorrect_answers,
-    isCorrect: false
+    id: nanoid(),
+    selected : [false,false,false,false]
 
   }
 })
@@ -40,34 +33,53 @@ useEffect(() => {
 }, [])
 
 
+
 function handleClick() {
   setStartQuiz(prevState => !prevState)
   }
 
-  function selectAnswer(event) {
+function selectAnswer(event) {
 
-    const {name, id} = event.target
+  const {name, id, value} = event.target
 
-    console.log(id)
+  // setSelectedAnswers(prevAnswers => {
 
-  }
+
+  //   return [...prevAnswers, {
+  //     questionIndex : id,
+  //     isSelected: true,
+  //     answer: value,
+  //     type : name
+  //   }]
+  // })
+
+  
+
+}
 
 
 const questionsElement = questionsArray.map(question => {
 
-  
+const answers = []
+answers.push(question.correct_answer)
+
+for(let i = 0; i < question.incorrect_answers.length; i++) {
+  answers.push(question.incorrect_answers[i])
+}
+
   return <Question
   key={question.id} 
   question={question.question}
-  correct_answer={question.correct_answer}
-  incorrect_answerOne={question.incorrect_answers[0]}
-  incorrect_answerTwo={question.incorrect_answers[1]}
-  incorrect_answerThree={question.incorrect_answers[2]} 
+  answers={answers}
+  // correct_answer={question.correct_answer}
+  // incorrect_answerOne={question.incorrect_answers[0]}
+  // incorrect_answerTwo={question.incorrect_answers[1]}
+  // incorrect_answerThree={question.incorrect_answers[2]}
   index={question.index}
   handleAnswer={selectAnswer}
+  isSelected={question.selected}
   />
 })
-
 
 
   return (
