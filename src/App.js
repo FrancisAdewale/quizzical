@@ -10,20 +10,30 @@ export default function App() {
 
 const [startQuiz, setStartQuiz] = useState(false)
 const [questionsData, setQuestionsData] = useState([])
-const [selectedAnswers, setSelectedAnswers] = useState([])
+
+const [array, setArray] = useState([])
+
 
 const questionsArray = questionsData.map((prevData, index) => {
+
+const answers = []
+
+answers.push({answer : prevData.correct_answer, isSelected : false})
+
+for(let i = 0; i < prevData.incorrect_answers.length; i++) {
+  answers.push({ wrong : prevData.incorrect_answers[i], isSelected: false})
+}
+
+
+
   return {
     question: prevData.question,
     index: index,
-    correct_answer : prevData.correct_answer,
-    incorrect_answers : prevData.incorrect_answers,
+    answers : answers,
     id: nanoid(),
-    selected : [false,false,false,false]
 
   }
 })
-
 
 useEffect(() => {
   fetch("https://opentdb.com/api.php?amount=5&category=21&difficulty=medium&type=multiple")
@@ -31,6 +41,32 @@ useEffect(() => {
   .then(data => setQuestionsData(data.results))
 
 }, [])
+
+useEffect(() => {
+  setArray(prevArray => {
+
+    return questionsData.map((prevData, index) => {
+  
+      const answers = []
+      
+      answers.push({answer : prevData.correct_answer, isSelected : false})
+      
+      for(let i = 0; i < prevData.incorrect_answers.length; i++) {
+        answers.push({ wrong : prevData.incorrect_answers[i], isSelected: false})
+      }
+      
+        return {
+          question: prevData.question,
+          index: index,
+          answers : answers,
+          id: nanoid(),
+      
+        }
+      })
+  
+  })
+
+}, [questionsData])
 
 
 
@@ -42,42 +78,44 @@ function selectAnswer(event) {
 
   const {name, id, value} = event.target
 
-  // setSelectedAnswers(prevAnswers => {
+
+  setArray(prevArray => {
+    console.log(prevArray)
+
+    return [{...prevArray, 
+      answers : [...prevArray.answers, !prevArray[value.answers[id].isSelected]]}]
+  })
+
+  // console.log(" " + value + " " + id)
+  // console.log(questionsArray)
+
+  //questionsArray[value].answers[id].isSelected = !questionsArray[value].answers[id].isSelected
+
+  // console.log(array)
 
 
-  //   return [...prevAnswers, {
-  //     questionIndex : id,
-  //     isSelected: true,
-  //     answer: value,
-  //     type : name
-  //   }]
-  // })
-
+  // if (name === questionsArray[value].answers[id].answer) {
+  //   console.log(name)
+  // }
   
+  // console.log(questionsArray)
 
 }
+// console.log(array)
 
 
-const questionsElement = questionsArray.map(question => {
+const questionsElement = array.map(question => {
 
-const answers = []
-answers.push(question.correct_answer)
 
-for(let i = 0; i < question.incorrect_answers.length; i++) {
-  answers.push(question.incorrect_answers[i])
-}
 
   return <Question
   key={question.id} 
   question={question.question}
-  answers={answers}
-  // correct_answer={question.correct_answer}
-  // incorrect_answerOne={question.incorrect_answers[0]}
-  // incorrect_answerTwo={question.incorrect_answers[1]}
-  // incorrect_answerThree={question.incorrect_answers[2]}
-  index={question.index}
+  answers={question.answers}
   handleAnswer={selectAnswer}
-  isSelected={question.selected}
+  questionIndex={question.index}
+  // isSelected={question.answers.isSelected}
+
   />
 })
 
