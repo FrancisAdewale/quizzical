@@ -80,10 +80,22 @@ function selectAnswer(event) {
 
 
   setArray(prevArray => {
-    console.log(prevArray)
 
-    return [{...prevArray, 
-      answers : [...prevArray.answers, !prevArray[value.answers[id].isSelected]]}]
+    let temp_state = [...prevArray]
+
+
+    let temp_element = { ...temp_state[value] };
+
+    temp_element.answers[id].isSelected = true
+
+    temp_state[value] = temp_element
+
+    return temp_state
+
+
+    
+    // return [{...prevArray,
+    // answers : !prevArray[value].answers[id].isSelected }]
   })
 
   // console.log(" " + value + " " + id)
@@ -100,8 +112,10 @@ function selectAnswer(event) {
   
   // console.log(questionsArray)
 
+
 }
-// console.log(array)
+
+console.log(array)
 
 
 const questionsElement = array.map(question => {
@@ -114,7 +128,7 @@ const questionsElement = array.map(question => {
   answers={question.answers}
   handleAnswer={selectAnswer}
   questionIndex={question.index}
-  // isSelected={question.answers.isSelected}
+  isSelected={question.answers[0].isSelected}
 
   />
 })
