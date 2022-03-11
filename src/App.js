@@ -14,26 +14,6 @@ const [questionsData, setQuestionsData] = useState([])
 const [array, setArray] = useState([])
 
 
-const questionsArray = questionsData.map((prevData, index) => {
-
-const answers = []
-
-answers.push({answer : prevData.correct_answer, isSelected : false})
-
-for(let i = 0; i < prevData.incorrect_answers.length; i++) {
-  answers.push({ wrong : prevData.incorrect_answers[i], isSelected: false})
-}
-
-
-
-  return {
-    question: prevData.question,
-    index: index,
-    answers : answers,
-    id: nanoid(),
-
-  }
-})
 
 useEffect(() => {
   fetch("https://opentdb.com/api.php?amount=5&category=21&difficulty=medium&type=multiple")
@@ -79,39 +59,17 @@ function selectAnswer(event) {
   const {name, id, value} = event.target
 
 
-  setArray(prevArray => {
+    let temp_state = [...array]
 
-    let temp_state = [...prevArray]
-
-
-    let temp_element = { ...temp_state[value] };
-
-    temp_element.answers[id].isSelected = true
+    let temp_element = { ...temp_state[value] }
+    
+    temp_element.answers[id].isSelected = !temp_state[value].answers[id].isSelected
 
     temp_state[value] = temp_element
 
-    return temp_state
+    setArray(temp_state)
 
-
-    
-    // return [{...prevArray,
-    // answers : !prevArray[value].answers[id].isSelected }]
-  })
-
-  // console.log(" " + value + " " + id)
-  // console.log(questionsArray)
-
-  //questionsArray[value].answers[id].isSelected = !questionsArray[value].answers[id].isSelected
-
-  // console.log(array)
-
-
-  // if (name === questionsArray[value].answers[id].answer) {
-  //   console.log(name)
-  // }
   
-  // console.log(questionsArray)
-
 
 }
 
@@ -119,8 +77,6 @@ console.log(array)
 
 
 const questionsElement = array.map(question => {
-
-
 
   return <Question
   key={question.id} 
