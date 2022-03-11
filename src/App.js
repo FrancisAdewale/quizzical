@@ -28,12 +28,14 @@ useEffect(() => {
     return questionsData.map((prevData, index) => {
   
       const answers = []
+
       
-      answers.push({answer : prevData.correct_answer, isSelected : false})
+      answers.push({answer : prevData.correct_answer, isSelected : false,})
       
       for(let i = 0; i < prevData.incorrect_answers.length; i++) {
-        answers.push({ wrong : prevData.incorrect_answers[i], isSelected: false})
+        answers.push({ wrong : prevData.incorrect_answers[i], isSelected: false,})
       }
+
       
         return {
           question: prevData.question,
@@ -69,14 +71,11 @@ function selectAnswer(event) {
 
     setArray(temp_state)
 
-  
-
 }
 
-console.log(array)
 
 
-const questionsElement = array.map(question => {
+const questionsElement = array.map((question, index) => {
 
   return <Question
   key={question.id} 
@@ -84,7 +83,10 @@ const questionsElement = array.map(question => {
   answers={question.answers}
   handleAnswer={selectAnswer}
   questionIndex={question.index}
-  isSelected={question.answers[0].isSelected}
+  buttonOneIsSelected={question.answers[0].isSelected}
+  buttonTwoIsSelected={question.answers[1].isSelected}
+  buttonThreeIsSelected={question.answers[2].isSelected}
+  buttonFourIsSelected={question.answers[3].isSelected}
 
   />
 })
