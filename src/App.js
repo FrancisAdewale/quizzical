@@ -15,15 +15,18 @@ const [array, setArray] = useState([])
 const [userAnswers, setUserAnswers] = useState([])
 const [submittedAnswers, setSubmittedAnswers] = useState(false)
 const [score, setScore] = useState({sum: 0})
+const [reset, setReset] = useState()
 
 
 
 useEffect(() => {
-  fetch("https://opentdb.com/api.php?amount=5&category=21&difficulty=medium&type=multiple")
-  .then(res => res.json())
-  .then(data => setQuestionsData(data.results))
+  if(!startQuiz) {
+    fetch("https://opentdb.com/api.php?amount=5&category=21&difficulty=medium&type=multiple")
+    .then(res => res.json())
+    .then(data => setQuestionsData(data.results))
+  }
 
-}, [])
+}, [startQuiz])
 
 useEffect(() => {
   setArray(prevArray => {
@@ -59,8 +62,15 @@ function handleClick() {
   setStartQuiz(prevState => !prevState)
   }
 
-const reset = () => {
+const restart = () => {
 
+  setStartQuiz(false)
+  setSubmittedAnswers(false)
+  setScore({sum : 0})
+  setUserAnswers([])
+ 
+
+  
 }
 
   const handleAnswers = () => {
@@ -94,9 +104,6 @@ function selectAnswer(event) {
   answers.push(name)
 
   setUserAnswers(answers)
-
-
-
     let temp_state = [...array]
 
     let temp_element = { ...temp_state[value] }
@@ -123,7 +130,9 @@ const questionsElement = array.map((question, index) => {
   buttonThreeIsSelected={question.answers[2].isSelected}
   buttonFourIsSelected={question.answers[3].isSelected}
   isCorrect={question.answers[0].isCorrect && submittedAnswers}
-  isIncorrect={question.answers[1].isSelected && submittedAnswers}
+  buttonTwoIsIncorrect={question.answers[1].isSelected && submittedAnswers}
+  buttonThreeIsIncorrect={question.answers[2].isSelected && submittedAnswers}
+  buttonFourIsIncorrect={question.answers[3].isSelected && submittedAnswers}
 
   />
 })
@@ -136,14 +145,13 @@ const questionsElement = array.map((question, index) => {
         <img src={Blob1} className="blob1"/>
         <img src={Blob2} className="blob2"/>
         { startQuiz ? questionsElement : <Intro handleClick={handleClick} />}
-{
-        submittedAnswers 
-        ?
-        startQuiz && <Results score={score.sum} handleReset={reset} />
-        :
-         startQuiz && < Submit handleAnswers={handleAnswers} />
-
-}
+        {
+          submittedAnswers 
+          ?
+          startQuiz && <Results score={score.sum} handleReset={restart} />
+          :
+          startQuiz && < Submit handleAnswers={handleAnswers} />
+        }
 
       </div>
 

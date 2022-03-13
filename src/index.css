@@ -133,3 +133,15 @@ hr {
 margin-top: 15px;
 border: 0.794239px solid #DBDEF0;
 }
+
+.results {
+  font-family: Inter;
+font-style: normal;
+font-weight: bold;
+font-size: 12.8px;
+line-height: 15px;
+text-align: center;
+margin-right: 5px;
+
+color: #293264;
+}
