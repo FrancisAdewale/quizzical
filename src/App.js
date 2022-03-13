@@ -14,7 +14,7 @@ const [questionsData, setQuestionsData] = useState([])
 const [array, setArray] = useState([])
 const [userAnswers, setUserAnswers] = useState([])
 const [submittedAnswers, setSubmittedAnswers] = useState(false)
-let score = 0
+const [score, setScore] = useState({sum: 0})
 
 
 
@@ -65,8 +65,6 @@ const reset = () => {
 
   const handleAnswers = () => {
 
-
-   
     for(let i = 0; i < userAnswers.length; i++) {
       if(userAnswers[i] === array[i].answers[0].answer) {
         let temp_state = [...array]
@@ -77,7 +75,9 @@ const reset = () => {
 
         temp_state[i] = temp_element
         setArray(temp_state)
-        score++
+        setScore(score => {
+          return {...score, sum : score.sum + 1}
+        })
     }
   }
 
@@ -139,7 +139,7 @@ const questionsElement = array.map((question, index) => {
 {
         submittedAnswers 
         ?
-        startQuiz && <Results score={score} handleReset={reset} />
+        startQuiz && <Results score={score.sum} handleReset={reset} />
         :
          startQuiz && < Submit handleAnswers={handleAnswers} />
 
