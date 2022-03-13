@@ -4,6 +4,7 @@ import Blob2 from "./imgs/blob2.png"
 import Intro from "./Intro"
 import Question from "./Question"
 import Submit from "./Submit"
+import Results from "./Results"
 import { nanoid } from 'nanoid'
 
 export default function App() {
@@ -12,6 +13,7 @@ const [startQuiz, setStartQuiz] = useState(false)
 const [questionsData, setQuestionsData] = useState([])
 const [array, setArray] = useState([])
 const [userAnswers, setUserAnswers] = useState([])
+const [submittedAnswers, setSubmittedAnswers] = useState(false)
 let score = 0
 
 
@@ -57,14 +59,14 @@ function handleClick() {
   setStartQuiz(prevState => !prevState)
   }
 
+const reset = () => {
+
+}
+
   const handleAnswers = () => {
 
 
    
-
-
-
-
     for(let i = 0; i < userAnswers.length; i++) {
       if(userAnswers[i] === array[i].answers[0].answer) {
         let temp_state = [...array]
@@ -78,6 +80,8 @@ function handleClick() {
         score++
     }
   }
+
+  setSubmittedAnswers(prevState => !prevState)
     console.log(score)
   }
 
@@ -118,7 +122,8 @@ const questionsElement = array.map((question, index) => {
   buttonTwoIsSelected={question.answers[1].isSelected}
   buttonThreeIsSelected={question.answers[2].isSelected}
   buttonFourIsSelected={question.answers[3].isSelected}
-  isCorrect={question.answers[0].isCorrect}
+  isCorrect={question.answers[0].isCorrect && submittedAnswers}
+  isIncorrect={question.answers[1].isSelected && submittedAnswers}
 
   />
 })
@@ -131,7 +136,15 @@ const questionsElement = array.map((question, index) => {
         <img src={Blob1} className="blob1"/>
         <img src={Blob2} className="blob2"/>
         { startQuiz ? questionsElement : <Intro handleClick={handleClick} />}
-        { startQuiz && < Submit handleAnswers={handleAnswers} />}
+{
+        submittedAnswers 
+        ?
+        startQuiz && <Results score={score} handleReset={reset} />
+        :
+         startQuiz && < Submit handleAnswers={handleAnswers} />
+
+}
+
       </div>
 
     </div>
