@@ -10,8 +10,9 @@ export default function App() {
 
 const [startQuiz, setStartQuiz] = useState(false)
 const [questionsData, setQuestionsData] = useState([])
-
 const [array, setArray] = useState([])
+const [userAnswers, setUserAnswers] = useState([])
+let score = 0
 
 
 
@@ -30,10 +31,10 @@ useEffect(() => {
       const answers = []
 
       
-      answers.push({answer : prevData.correct_answer, isSelected : false,})
+      answers.push({answer : prevData.correct_answer, isSelected : false, isCorrect: false})
       
       for(let i = 0; i < prevData.incorrect_answers.length; i++) {
-        answers.push({ wrong : prevData.incorrect_answers[i], isSelected: false,})
+        answers.push({ wrong : prevData.incorrect_answers[i], isSelected: false, isCorrect: false})
       }
 
       
@@ -56,9 +57,40 @@ function handleClick() {
   setStartQuiz(prevState => !prevState)
   }
 
+  const handleAnswers = () => {
+
+
+   
+
+
+
+
+    for(let i = 0; i < userAnswers.length; i++) {
+      if(userAnswers[i] === array[i].answers[0].answer) {
+        let temp_state = [...array]
+
+        let temp_element = { ...temp_state[i] }
+
+        temp_element.answers[0].isCorrect = !temp_state[i].answers[0].isCorrect
+
+        temp_state[i] = temp_element
+        setArray(temp_state)
+        score++
+    }
+  }
+    console.log(score)
+  }
+
 function selectAnswer(event) {
 
   const {name, id, value} = event.target
+
+  let answers = [...userAnswers]
+
+  answers.push(name)
+
+  setUserAnswers(answers)
+
 
 
     let temp_state = [...array]
@@ -74,7 +106,6 @@ function selectAnswer(event) {
 }
 
 
-
 const questionsElement = array.map((question, index) => {
 
   return <Question
@@ -87,6 +118,7 @@ const questionsElement = array.map((question, index) => {
   buttonTwoIsSelected={question.answers[1].isSelected}
   buttonThreeIsSelected={question.answers[2].isSelected}
   buttonFourIsSelected={question.answers[3].isSelected}
+  isCorrect={question.answers[0].isCorrect}
 
   />
 })
@@ -99,7 +131,7 @@ const questionsElement = array.map((question, index) => {
         <img src={Blob1} className="blob1"/>
         <img src={Blob2} className="blob2"/>
         { startQuiz ? questionsElement : <Intro handleClick={handleClick} />}
-        { startQuiz && < Submit />}
+        { startQuiz && < Submit handleAnswers={handleAnswers} />}
       </div>
 
     </div>
